@@ -1,23 +1,27 @@
 import logo from './logo.svg';
 import './App.css';
+import GoogleAutocomplete from 'react-google-autocomplete';
+
+
 
 function App() {
+
+  function handlePlaceSelect(place) {
+    console.log(place);
+    // You can use the selected place object to update your state or perform other actions
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header >
+        
       </header>
+      <GoogleAutocomplete
+        apiKey={"AIzaSyATZWTQjFZVElmC_pXyTz9XNgSJftqhz5I"}
+        onPlaceSelected={handlePlaceSelect}
+        types={['(regions)']}
+        placeholder="Enter a location"
+      />
     </div>
   );
 }
