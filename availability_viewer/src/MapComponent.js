@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
-function MapComponent({ location, radius }) {
+function MapComponent({ location, radius, onLoad, onMarkerLoad }) {
   const [map, setMap] = useState(null);
   const [center, setCenter] = useState(null);
+  const [marker, setMarker] = useState(null);
 
   useEffect(() => {
     // Create a new Google Maps API instance
@@ -21,6 +22,21 @@ function MapComponent({ location, radius }) {
         });
         setMap(map);
         setCenter(latLng);
+
+        // Call the onLoad function with the map instance
+        onLoad(map);
+
+        // Create a marker at the selected location
+        const marker = new googleMaps.Marker({
+          position: latLng,
+          map,
+          visible: false,
+          title: location,
+        });
+        setMarker(marker);
+
+        // Call the onMarkerLoad function with the marker instance
+        onMarkerLoad(marker);
       }
     });
   }, [location, radius]);
