@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "target": "es5",
+      "module": "commonjs",
+      "lib": ["dom", "es2015"],
+      "jsx": "react",
+      "strict": true,
+      "esModuleInterop": true,
+      "allowImportingTsExtensions": true,
+      "noEmit": true,
+      
+    },
+    "include": ["src"],
+    "files": [
+      "App.tsx",
+      "index.tsx",
+      "App.test.tsx",
+      "MapComponent.tsx",
+      "reportWebVitals.tsx",
+      "setupTests.tsx"
+    ]
+  }
