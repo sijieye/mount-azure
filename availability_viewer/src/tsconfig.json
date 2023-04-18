@@ -12,7 +12,7 @@
     },
     "include": ["src"],
     "files": [
-      "App.tsx",
+      "Map.tsx",
       "index.tsx",
       "App.test.tsx",
       "MapComponent.tsx",
