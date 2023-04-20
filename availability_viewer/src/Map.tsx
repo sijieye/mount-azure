@@ -3,7 +3,6 @@ import GoogleAutocomplete from 'react-google-autocomplete';
 import React, { useState, useEffect } from 'react';
 import MapComponent from './MapComponent';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Calendar from './Calendar';
 interface Location {
   lat: number;
   lng: number;
@@ -17,8 +16,8 @@ interface Item {
 
 function Map() {
   const navigate = useNavigate();
-  const goToCalendar = () => {
-    navigate('/Calendar'); 
+  const goToCalendar = (id:string) => {
+    navigate(`/Calendar/${id}`); 
   };
   
   const [location, setLocation] = useState<string>('');
@@ -97,7 +96,7 @@ function Map() {
                 content: `Available at: ${item.time}`,
               });
               infowindow.open(map, marker);
-              goToCalendar();
+              goToCalendar(item.time); //change this to item.id when the data is available
             });
           }
         }

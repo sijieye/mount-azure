@@ -33,8 +33,11 @@ interface MyDayProps extends DayCalendarProps<object> {
   availableDays: number[];
 }
 
+interface ICalendarProps {
+  item_id: string;
+}
 
-function Calendar() {
+function Calendar(props :ICalendarProps) {
   let data = [
     {
       date: "2023-04-21",
@@ -59,6 +62,7 @@ function Calendar() {
     }
 
   ]
+  console.log(props);
 
   const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
