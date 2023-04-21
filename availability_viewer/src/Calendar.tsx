@@ -1,68 +1,32 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-
-// function Calendar() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <p>First components</p>
-//         <Link to="/">go back</Link>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default Calendar;
-
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
 import Badge from '@mui/material/Badge';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { PickersDay, PickersDayClasses } from '@mui/x-date-pickers/PickersDay';
+import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import Button from '@mui/material/Button';
 import Grid from "@mui/material/Unstable_Grid2";
 import { DayCalendarProps } from '@mui/x-date-pickers/internals';
 
 
-interface MyDayProps extends DayCalendarProps<object> {
-  availableDays: number[];
-}
 
 interface ICalendarProps {
   item_id: string;
 }
 
+interface Appointment {
+  id: string;
+  item_id: string;
+  date: string;
+  time: string;
+  booked: boolean;
+}
+
 function Calendar(props :ICalendarProps) {
-  let data = [
-    {
-      date: "2023-04-21",
-      time: "12:00AM",
-      booked: true
-    },
-    {
-      date: "2023-04-29",
-      time: "12:00AM",
-      booked: true
-    },
-    {
-      date: "2023-04-18",
-      time: "12:00AM",
-      booked: true
-    },
-
-    {
-      date: "2023-04-25",
-      time: "12:00AM",
-      booked: true
-    }
-
-  ]
-  console.log(props);
 
   const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -72,8 +36,7 @@ function Calendar(props :ICalendarProps) {
   const [reserveMessage, setReserveMessage] = React.useState<JSX.Element | undefined>();  const [presentMonth, setPresentMonth] = React.useState<string>();
   const [presentYear, setPresentYear] = React.useState<string>();
   const [currentDate, setCurrentDate] = React.useState<Date>();
-
-
+  const [data, setData] = React.useState<Appointment[]>([]);
 
 
   const current = (() => {
@@ -167,7 +130,11 @@ ServerDay.propTypes = {
 
 
 
-  const fetchUnvailableDays = () => {
+  const fetchUnvailableDays = async() => {
+    const url = "http://localhost:3001/availability?item_id=" + props.item_id;
+    const response = await fetch(url);
+    const data = await response.json() as Appointment[];
+    setData(data);
     const date = new Date();
     let newMonth: string = (date.getMonth() + 1).toString();
     let newDate: string = date.getDate().toString();
@@ -181,6 +148,7 @@ ServerDay.propTypes = {
     }
 
     // setCurrentDate(date.getFullYear() + "-" + newMonth + "-" + newDate)
+    console.log("data in unavailable days", data)
 
     const today = current()
     let ls = data.map(info => info.date)
@@ -190,6 +158,7 @@ ServerDay.propTypes = {
     setPresentYear(today.slice(0, 4))
 
     setUnavailableDays(ls)
+    console.log("unavailable days", unavailableDays)
   }
 
   const fetchAvailableDays = (date: { [x: string]: number; } | undefined) => {
@@ -232,6 +201,7 @@ ServerDay.propTypes = {
 
 
   React.useEffect(() => {
+    // getData();
     fetchUnvailableDays();
     const dateObj: { [x: string]: number } | undefined = currentDate
   ? {
@@ -240,6 +210,8 @@ ServerDay.propTypes = {
       day: currentDate.getDate(),
     }
   : undefined;
+
+  
     fetchAvailableDays(dateObj);
     // abort request on unmount
     return () => {
@@ -309,14 +281,38 @@ ServerDay.propTypes = {
       )
     }
   }
-  const submitReserve = () =>{
+  function generateRandomID(): string {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 7; i++) {
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      result += chars.charAt(randomIndex);
+    }
+    return result;
+  }
+  
+  const submitReserve = async() =>{
     let booking = 
     {
+      id: generateRandomID(),
+      item_id: props.item_id,
       date: JSON.stringify(chosenTime).slice(1,11),
       time: "12:00AM",
       booked: true
     }
-    data.push(booking)
+    // data.push(booking)
+    console.log("booking", booking)
+    fetch('http://localhost:3001/availability', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(booking)
+  })
+    .then(response => response.json())
+    .then(data => setData(data))
+
+
 
     fetchUnvailableDays();
     setReserveMessage((<Typography variant="h5">We have your reservation!</Typography>))
@@ -324,7 +320,7 @@ ServerDay.propTypes = {
 
 
   const initialValue = dayjs(current());
-  console.log(availableDays);
+  // console.log(availableDays);
   
   return (
     <div>
