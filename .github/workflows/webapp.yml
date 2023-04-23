@@ -1,0 +1,74 @@
+name: Build and deploy Node.js app to Azure Web App - warehouseauto
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AZURE_WEBAPP_NAME: mount    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'availability_viewer'      # set this to the path to your web app project, defaults to the repository root
+  NODE_VERSION: '18.x'                # set this to the node version to use
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: availability_viewer/package-lock.json
+
+    - name: npm install
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+      run: |
+        npm install
+    - name: npm client install
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/client'
+      run: |
+        npm install
+        
+    - name: npm build client
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/client'
+      run: |
+        npm run build
+        rm -r public
+        rm -r node_modules
+        rm -r src
+        
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v3
+      with:
+        name: node-app
+        path: .
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Download artifact from build job
+      uses: actions/download-artifact@v3
+      with:
+        name: node-app
+
+    - name: 'Deploy to Azure WebApp'
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

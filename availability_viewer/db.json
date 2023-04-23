@@ -1,0 +1,220 @@
+{
+  "amentities": [
+    {
+      "item_id": "A1B2C",
+      "name": "Blue Bike",
+      "location": {
+        "lat": 42.3601,
+        "lng": -71.0589
+      }
+    },
+    {
+      "item_id": "D3E4F",
+      "name": "Golf Clubs",
+      "location": {
+        "lat": 42.3505,
+        "lng": -71.076
+      }
+    },
+    {
+      "item_id": "G5H6I",
+      "name": "Scooter",
+      "location": {
+        "lat": 40.785091,
+        "lng": -73.968285
+      }
+    },
+    {
+      "item_id": "J7K8L",
+      "name": "Red Bike",
+      "location": {
+        "lat": 42.3394,
+        "lng": -71.0942
+      }
+    }
+  ],
+  "availability": [
+    {
+      "id": "z8W3r6P",
+      "item_id": "A1B2C",
+      "date": "2023-04-21",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "m1J7h9N",
+      "item_id": "A1B2C",
+      "date": "2023-04-29",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "p4Y6n7R",
+      "item_id": "A1B2C",
+      "date": "2023-04-18",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "s2C8k6M",
+      "item_id": "A1B2C",
+      "date": "2023-04-25",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "r9K5u1G",
+      "item_id": "D3E4F",
+      "date": "2023-04-01",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "n2Q1e8T",
+      "item_id": "D3E4F",
+      "date": "2023-04-07",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "a7D9s1F",
+      "item_id": "D3E4F",
+      "date": "2023-04-13",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "v5E9n1R",
+      "item_id": "D3E4F",
+      "date": "2023-04-19",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "G5H6I",
+      "item_id": "G5H6I",
+      "date": "2023-04-05",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "Y1A2Z9",
+      "item_id": "G5H6I",
+      "date": "2023-04-11",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "B7C8E1",
+      "item_id": "G5H6I",
+      "date": "2023-04-17",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "F3U6M2",
+      "item_id": "G5H6I",
+      "date": "2023-04-23",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "J7K8L",
+      "item_id": "J7K8L",
+      "date": "2023-04-04",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "P2Q9T4",
+      "item_id": "J7K8L",
+      "date": "2023-04-10",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "N1M3T7",
+      "item_id": "J7K8L",
+      "date": "2023-04-16",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "E4H5J2",
+      "item_id": "J7K8L",
+      "date": "2023-04-22",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "UTnc9wX",
+      "item_id": "A1B2C",
+      "date": "2023-04-27",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "G5H6I",
+      "item_id": "G5H6I",
+      "date": "2023-04-05",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "Y1A2Z9",
+      "item_id": "G5H6I",
+      "date": "2023-04-11",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "B7C8E1",
+      "item_id": "G5H6I",
+      "date": "2023-04-17",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "F3U6M2",
+      "item_id": "G5H6I",
+      "date": "2023-04-23",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "J7K8L",
+      "item_id": "J7K8L",
+      "date": "2023-04-04",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "P2Q9T4",
+      "item_id": "J7K8L",
+      "date": "2023-04-10",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "N1M3T7",
+      "item_id": "J7K8L",
+      "date": "2023-04-16",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "E4H5J2",
+      "item_id": "J7K8L",
+      "date": "2023-04-22",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "UTnc9wX",
+      "item_id": "A1B2C",
+      "date": "2023-04-27",
+      "time": "12:00AM",
+      "booked": true
+    }
+  ]
+}
