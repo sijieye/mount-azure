@@ -65,7 +65,7 @@ function Map() {
   // ];
   
   const getData = async () => {
-    const response = await fetch('http://localhost:3001/amentities');
+    const response = await fetch('https://jsonserver-woh7.onrender.com/amentities');
     const data = await response.json();
     setData(data);
   };

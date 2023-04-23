@@ -131,7 +131,7 @@ ServerDay.propTypes = {
 
 
   const fetchUnvailableDays = async() => {
-    const url = "http://localhost:3001/availability?item_id=" + props.item_id;
+    const url = "https://jsonserver-woh7.onrender.com/availability?item_id=" + props.item_id;
     const response = await fetch(url);
     const data = await response.json() as Appointment[];
     setData(data);
@@ -302,7 +302,7 @@ ServerDay.propTypes = {
     }
     // data.push(booking)
     console.log("booking", booking)
-    fetch('http://localhost:3001/availability', {
+    fetch('https://jsonserver-woh7.onrender.com/availability', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

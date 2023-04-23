@@ -292,6 +292,20 @@
       "date": "2023-05-04",
       "time": "12:00AM",
       "booked": true
+    },
+    {
+      "id": "kEAkQrv",
+      "item_id": "A1B2C",
+      "date": "2023-05-02",
+      "time": "12:00AM",
+      "booked": true
+    },
+    {
+      "id": "IhB5prq",
+      "item_id": "A1B2C",
+      "date": "2023-05-22",
+      "time": "12:00AM",
+      "booked": true
     }
   ]
 }
