@@ -7,4 +7,4 @@ const port = process.env.PORT || 3000;
 server.use(middlewares);
 server.use(router);
 
-server.listen(port);
+server.listen(3001);

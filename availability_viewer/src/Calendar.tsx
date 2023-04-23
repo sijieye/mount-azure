@@ -311,7 +311,7 @@ ServerDay.propTypes = {
   })
     .then(response => response.json())
     .then(data => setData(data))
-    .then(refresh => fetchUnvailableDays)
+    .then(refresh => fetchUnvailableDays())
 
 
 

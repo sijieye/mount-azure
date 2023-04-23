@@ -215,13 +215,6 @@
       "date": "2023-04-27",
       "time": "12:00AM",
       "booked": true
-    },
-    {
-      "id": "QPXqajO",
-      "item_id": "A1B2C",
-      "date": "2023-05-08",
-      "time": "12:00AM",
-      "booked": true
     }
   ]
 }
