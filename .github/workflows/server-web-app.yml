@@ -30,7 +30,7 @@ jobs:
         npm install
     
     - name: Zip artifact for deployment
-        run:  7z a release.zip ./${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -r
+      run:  7z a release.zip ./${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -r
         
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
@@ -54,7 +54,7 @@ jobs:
         name: node-app
 
     - name: unzip artifact for deployment
-        run: 7z x release.zip
+      run: 7z x release.zip
 
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
