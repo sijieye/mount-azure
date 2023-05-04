@@ -47,7 +47,7 @@ function Calendar(props :ICalendarProps) {
   const [data, setData] = React.useState<Appointment[]>([]);
   const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = React.useState(false);
-  const api = "https://mountserver.onrender.com"
+  const api = "http://localhost:3001"
 
   // fetch current time
   const current = (() => {

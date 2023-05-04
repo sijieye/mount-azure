@@ -3,6 +3,8 @@ import GoogleAutocomplete from 'react-google-autocomplete';
 import React, { useState, useEffect } from 'react';
 import MapComponent from './MapComponent';
 import { useNavigate } from 'react-router-dom';
+
+
 interface Location {
   lat: number;
   lng: number;
@@ -12,15 +14,16 @@ interface Item {
   item_id: string;
   name: string;
 
-  location: Location;
+  location: Location; 
 }
-
+ 
 function Map() {
+
   const navigate = useNavigate();
   const goToCalendar = (item_id:string) => {
     navigate(`/Calendar/${item_id}`); 
   };
-  
+
   const [location, setLocation] = useState<string>('');
   const [radius, setRadius] = useState<number>(1);
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -29,7 +32,7 @@ function Map() {
   const [mapRendered, setMapRendered] = useState<boolean>(false);
   
   // link to the json-server on port 3001
-  const api = "https://mountserver.onrender.com"
+  const api = "http://localhost:3001"
 
   const [data, setData] = useState<Item[]>([]);
 
@@ -109,7 +112,6 @@ function Map() {
 
   return (
     <div>
-
     <div className='form-div'>
       <div className='title' style={{fontSize: '48px'}}>
           Availability Viewer
@@ -124,7 +126,7 @@ function Map() {
           <label style={{fontSize: '40px'}}>
             Enter Location:
             <GoogleAutocomplete
-              apiKey={"AIzaSyATZWTQjFZVElmC_pXyTz9XNgSJftqhz5I"}
+              apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
               onPlaceSelected={handlePlaceSelect}
               types={['(regions)']}
               placeholder="Enter a location"
