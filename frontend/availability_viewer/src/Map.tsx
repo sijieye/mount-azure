@@ -32,7 +32,7 @@ function Map() {
   const [mapRendered, setMapRendered] = useState<boolean>(false);
   
   // link to the json-server on port 3001
-  const api = "http://localhost:3001"
+  const api = "https://mountserver.onrender.com"
 
   const [data, setData] = useState<Item[]>([]);
 
