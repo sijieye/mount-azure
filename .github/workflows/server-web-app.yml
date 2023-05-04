@@ -19,9 +19,7 @@
 
 on:
   push:
-    paths:
-    - "FE/**"
-    branches: [ "main" ]
+    branches: [ "server" ]
   workflow_dispatch:
 
 env:
