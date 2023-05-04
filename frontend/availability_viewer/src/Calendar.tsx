@@ -442,40 +442,40 @@ ServerDay.propTypes = {
       </Grid> 
 
       <div className="cart-container">
-  <IconButton aria-label="cart" onClick={handleCartOpen}>
-    <Badge badgeContent={cartItems.length} color="secondary">
-      <ShoppingCartIcon />
-    </Badge>
-  </IconButton>
-  {cartOpen && (
-    <div className="cart">
-      <div className="cart-header">
-        <h3>Shopping Cart</h3>
-        <IconButton aria-label="close" onClick={handleCartClose}>
-          <CloseIcon />
+        <IconButton aria-label="cart" onClick={handleCartOpen}>
+          <Badge badgeContent={cartItems.length} color="secondary">
+            <ShoppingCartIcon />
+          </Badge>
         </IconButton>
-      </div>
-      <div className="cart-items">
-        {cartItems.map((item, index) => (
-          <div key={index} className="cart-item">
-            <span>{item.time}</span>
-            <IconButton aria-label="delete" onClick={() => handleCartRemove(index)}>
-              <DeleteIcon />
-            </IconButton>
+        {cartOpen && (
+          <div className="cart">
+            <div className="cart-header">
+              <h3>Shopping Cart</h3>
+              <IconButton aria-label="close" onClick={handleCartClose}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className="cart-items">
+              {cartItems.map((item, index) => (
+                <div key={index} className="cart-item">
+                  <span>{item.time}</span>
+                  <IconButton aria-label="delete" onClick={() => handleCartRemove(index)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ))}
+            </div>
+            <div className="cart-footer">
+              <Button variant="contained" color="primary" onClick={handleReserveAll}>
+                Reserve All
+              </Button>
+              <Button variant="contained" color="secondary" onClick={handleCartClear}>
+                Clear Cart
+              </Button>
+            </div>
           </div>
-        ))}
+        )}
       </div>
-      <div className="cart-footer">
-        <Button variant="contained" color="primary" onClick={handleReserveAll}>
-          Reserve All
-        </Button>
-        <Button variant="contained" color="secondary" onClick={handleCartClear}>
-          Clear Cart
-        </Button>
-      </div>
-    </div>
-  )}
-</div>
 
     </div>
     
