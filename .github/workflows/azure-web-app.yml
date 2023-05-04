@@ -1,11 +1,14 @@
+name: Build and deploy Node.js app to Azure Web App - warehouseauto
+
 on:
   push:
-    branches: [ "" ]
+    branches:
+      - server
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: mountserver    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: 'serving'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_NAME: mount    # set this to your application's name
+  AZURE_WEBAPP_PACKAGE_PATH: 'frontend'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '18.x'                # set this to the node version to use
 
 permissions:
@@ -22,21 +25,30 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: serving/package-lock.json
+        cache-dependency-path: frontend/package-lock.json
 
     - name: npm install
       working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       run: |
         npm install
-    
-    - name: Zip artifact for deployment
-      run:  7z a release.zip ./${{ env.AZURE_WEBAPP_PACKAGE_PATH }} -r
+    - name: npm client install
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/availability_viewer'
+      run: |
+        npm install
+        
+    - name: npm build client
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/availability_viewer'
+      run: |
+        npm run build
+        rm -r public
+        rm -r node_modules
+        rm -r src
         
     - name: Upload artifact for deployment job
       uses: actions/upload-artifact@v3
       with:
         name: node-app
-        path: release.zip
+        path: .
 
   deploy:
     permissions:
@@ -53,13 +65,10 @@ jobs:
       with:
         name: node-app
 
-    - name: unzip artifact for deployment
-      run: 7z x release.zip
-
     - name: 'Deploy to Azure WebApp'
       id: deploy-to-webapp
       uses: azure/webapps-deploy@v2
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_SERVER }}
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
