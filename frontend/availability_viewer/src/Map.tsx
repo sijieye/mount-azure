@@ -126,7 +126,7 @@ function Map() {
           <label style={{fontSize: '40px'}}>
             Enter Location:
             <GoogleAutocomplete
-              apiKey={AIzaSyATZWTQjFZVElmC_pXyTz9XNgSJftqhz5I}
+              apiKey={"AIzaSyATZWTQjFZVElmC_pXyTz9XNgSJftqhz5I"}
               onPlaceSelected={handlePlaceSelect}
               types={['(regions)']}
               placeholder="Enter a location"
