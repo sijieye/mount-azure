@@ -12,6 +12,7 @@ function MapComponent({ location, radius, onLoad, onMarkerLoad }: MapProps) {
   const [center, setCenter] = useState<google.maps.LatLng | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
 
+  
   useEffect(() => {
     // Create a new Google Maps API instance
     const googleMaps = window.google.maps;
@@ -49,7 +50,7 @@ function MapComponent({ location, radius, onLoad, onMarkerLoad }: MapProps) {
   }, [location, radius]);
 
   return (
-    <div id="map" style={{ height: '400px', width: '100%' }}>
+    <div id="map" style={{ height: '600px', width: '100%' }}>
       {/* The Google Maps API will render the map here */}
     </div>
   );

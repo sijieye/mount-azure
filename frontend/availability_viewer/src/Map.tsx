@@ -1,8 +1,10 @@
-import './App.css';
+import './Map.css';
 import GoogleAutocomplete from 'react-google-autocomplete';
 import React, { useState, useEffect } from 'react';
 import MapComponent from './MapComponent';
 import { useNavigate } from 'react-router-dom';
+
+
 interface Location {
   lat: number;
   lng: number;
@@ -12,66 +14,38 @@ interface Item {
   item_id: string;
   name: string;
 
-  location: Location;
+  location: Location; 
 }
-
+ 
 function Map() {
+
   const navigate = useNavigate();
   const goToCalendar = (item_id:string) => {
     navigate(`/Calendar/${item_id}`); 
   };
-  
+
   const [location, setLocation] = useState<string>('');
   const [radius, setRadius] = useState<number>(1);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
   const [showMap, setShowMap] = useState<boolean>(false);
   const [mapRendered, setMapRendered] = useState<boolean>(false);
+  
+  // link to the json-server on port 3001
+  const api = "https://mountserver.onrender.com"
 
   const [data, setData] = useState<Item[]>([]);
-  // const data: Item[] = [
-  //   {
-  //     name: 'Blue Bike',
-  //     time: '2023-03-21T14:30:00-04:00', // example time in Boston
-  //     location: {
-  //       lat: 42.3601,
-  //       lng: -71.0589,
-  //     },
-  //   },
-  //   {
-  //     name: 'Golf Clubs',
-  //     time: '2023-03-21T09:00:00-04:00', // example time in Boston
-  //     location: {
-  //       lat: 42.3505,
-  //       lng: -71.0760,
-  //     },
-  //   },
-  //   {
-  //     name: 'Scooter',
-  //     time: '2023-03-21T12:00:00-04:00', // example time in New York
-  //     location: {
-  //       lat: 40.785091,
-  //       lng: -73.968285,
-  //     },
-  //   },
-  //   {
-  //     name: 'Red Bike',
-  //     time: '2023-03-21T16:00:00-04:00', // example time in Boston
-  //     location: {
-  //       lat: 42.3394,
-  //       lng: -71.0942,
-  //     },
-  //   },
-  // ];
+
   
   const getData = async () => {
-    const response = await fetch('http://localhost:3001/amentities');
+    // fetch the amentities data from the json-server
+    const response = await fetch(`${api}/amentities`);
     const data = await response.json();
     setData(data);
   };
   useEffect(() => {
     getData();
-    if (map && marker && showMap && !mapRendered) {
+    if (map && marker && showMap) {
       const circle = new window.google.maps.Circle({
         strokeColor: '#FF0000',
         strokeOpacity: 0.8,
@@ -138,24 +112,43 @@ function Map() {
 
   return (
     <div>
+    <div className='form-div'>
+      <div className='title' style={{fontSize: '48px'}}>
+          Availability Viewer
+      </div>
+        <div className='description' style={{fontSize: '40px'}}>
+        Check out our availability and book the date and time that works for you!
+        </div>
+        <hr>
+        </hr>
       <form onSubmit={handleSubmit}>
-        <label>
-          Enter Location:
-          <GoogleAutocomplete
-            apiKey={"AIzaSyATZWTQjFZVElmC_pXyTz9XNgSJftqhz5I"}
-            onPlaceSelected={handlePlaceSelect}
-            types={['(regions)']}
-            placeholder="Enter a location"
-          />
-        </label>
-        <br />
-        <label>
-          Select Radius (in miles):
-          <input type="number" value={radius} onChange={handleRadiusSelect} />
-        </label>
-        <br />
-        <button type="submit">Submit</button>
+        <div className='location'>
+          <label style={{fontSize: '40px'}}>
+            Enter Location:
+            <GoogleAutocomplete
+              apiKey={process.env.REACT_APP_GOOGLE_API_KEY}
+              onPlaceSelected={handlePlaceSelect}
+              types={['(regions)']}
+              placeholder="Enter a location"
+              id="autocomplete"
+              style={{ width: '400px', height: '40px', fontSize: '40px' }}
+            /> 
+          </label>
+        
+        </div>
+        <div>
+          <label className='radius' style={{fontSize: '40px'}}>
+            Select Radius (in miles):  
+            <input type="number" value={radius} onChange={handleRadiusSelect} style={{ width: '400px', height: '40px', fontSize: '40px' }}/>
+          </label>
+          
+        </div>
+
+        <button className="booking-button" type="submit">Submit</button>
       </form>
+    </div>
+    
+    <div className='map-div'>
       {showMap && location && (
         <MapComponent
           location={location}
@@ -164,6 +157,7 @@ function Map() {
           onMarkerLoad={handleMarkerLoad}
         />
       )}
+    </div>
     </div>
   )};
 

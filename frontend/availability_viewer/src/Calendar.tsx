@@ -1,3 +1,4 @@
+// package import
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
@@ -7,11 +8,13 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 import { DayCalendarSkeleton } from '@mui/x-date-pickers/DayCalendarSkeleton';
-import { Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 import Button from '@mui/material/Button';
 import Grid from "@mui/material/Unstable_Grid2";
-import { DayCalendarProps } from '@mui/x-date-pickers/internals';
-
+import './Calendar.css'
+import './Map.css'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { Close as CloseIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 
 interface ICalendarProps {
@@ -26,6 +29,11 @@ interface Appointment {
   booked: boolean;
 }
 
+interface CartItem {
+  item_id: string;
+  time: string;
+}
+
 function Calendar(props :ICalendarProps) {
 
   const requestAbortController = React.useRef<AbortController | null>(null);
@@ -37,8 +45,11 @@ function Calendar(props :ICalendarProps) {
   const [presentYear, setPresentYear] = React.useState<string>();
   const [currentDate, setCurrentDate] = React.useState<Date>();
   const [data, setData] = React.useState<Appointment[]>([]);
+  const [cartItems, setCartItems] = React.useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = React.useState(false);
+  const api = "https://mountserver.onrender.com"
 
-
+  // fetch current time
   const current = (() => {
     const date = new Date();
 
@@ -53,11 +64,10 @@ function Calendar(props :ICalendarProps) {
       today = "0" + today
     }
 
-    let currentDate = date.toJSON();
-
     return date.getFullYear() + "-" + month + "-" + today;
   });
-
+  
+  // calculate the time availiability/unavailiability
   function ServerDay(props: { [x: string]: any; outsideCurrentMonth: any; day: any; availableDays?: any; }) {
     const { availableDays = [], day, outsideCurrentMonth, ...other } = props;
 
@@ -72,7 +82,9 @@ function Calendar(props :ICalendarProps) {
 
     const dateNow = props.day['$y'] + '-' + monthNum + '-' + dayNum
   
+    // If date is selected to be reserved
     if (isSelected){
+      // Mark date as unavailable
       if (unavailableDays.includes(dateNow)){
         return (
           <Badge
@@ -88,6 +100,7 @@ function Calendar(props :ICalendarProps) {
       }
     }
 
+    // Mark date as available if it is within or after current year
     if(presentYear !== undefined && parseInt(props.day['$y']) >= parseInt(presentYear)){
       return (
         <Badge
@@ -102,6 +115,7 @@ function Calendar(props :ICalendarProps) {
       );
     }
     else{
+      // Mark with nothing if date is before current date
       return (
         <Badge
           key={props.day.toString()}
@@ -129,9 +143,9 @@ ServerDay.propTypes = {
 };
 
 
-
+  // calculate the unavailable days
   const fetchUnvailableDays = async() => {
-    const url = "http://localhost:3001/availability?item_id=" + props.item_id;
+    const url = `${api}/availability?item_id=` + props.item_id;
     const response = await fetch(url);
     const data = await response.json() as Appointment[];
     setData(data);
@@ -148,7 +162,7 @@ ServerDay.propTypes = {
     }
 
     // setCurrentDate(date.getFullYear() + "-" + newMonth + "-" + newDate)
-    console.log("data in unavailable days", data)
+    // console.log("data in unavailable days", data)
 
     const today = current()
     let ls = data.map(info => info.date)
@@ -158,9 +172,10 @@ ServerDay.propTypes = {
     setPresentYear(today.slice(0, 4))
 
     setUnavailableDays(ls)
-    console.log("unavailable days", unavailableDays)
+    // console.log("unavailable days", unavailableDays)
   }
 
+  // calculate the available days
   const fetchAvailableDays = (date: { [x: string]: number; } | undefined) => {
     let ls = [];
     let today = current().slice(8, 10);
@@ -201,7 +216,7 @@ ServerDay.propTypes = {
 
 
   React.useEffect(() => {
-    // getData();
+    // get the unavailable days
     fetchUnvailableDays();
     const dateObj: { [x: string]: number } | undefined = currentDate
   ? {
@@ -211,7 +226,7 @@ ServerDay.propTypes = {
     }
   : undefined;
 
-  
+    // get the availiable days
     fetchAvailableDays(dateObj);
     // abort request on unmount
     return () => {
@@ -239,17 +254,16 @@ ServerDay.propTypes = {
     $d: string;
     $D: number;
   }
-
+  // time to date convertor
   const timeToDate = (obj: TimeObj) => {
     
     let tMonth = obj['$M'] + 1
     let tYear = obj['$d'].toString().slice(11, 15)
     let tDay = obj['$D']
     let tdate = new Date(tYear+"-"+tMonth+"-"+tDay)
-    // console.log(tYear,tMonth,tDay)
-    // console.log(tdate)
     return tdate
   }
+
   const getDate = (date: string) =>{
     if (date){
       let datestring = JSON.stringify(date).slice(1,11)
@@ -276,11 +290,20 @@ ServerDay.propTypes = {
     }else{
       return(
         <div>
-          <Button variant="contained" onClick={submitReserve}>12:00AM</Button>
+          <Button variant="contained" onClick={() => {
+            if (chosenTime) {
+              const newItem = { time: chosenTime, item_id: props.item_id };
+              setCartItems([...cartItems, newItem]);
+              setReserveMessage(<Typography variant="h5">Item added to cart</Typography>);
+            } else {
+              setReserveMessage(<Typography variant="h5" color="error">No date selected</Typography>);
+            }
+          }}>12:00AM</Button>
         </div>
       )
     }
-  }
+}
+  // generate random id with 7 characters/numbers
   function generateRandomID(): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
@@ -290,88 +313,170 @@ ServerDay.propTypes = {
     }
     return result;
   }
-  
-  const submitReserve = async() =>{
-    let booking = 
-    {
-      id: generateRandomID(),
-      item_id: props.item_id,
-      date: JSON.stringify(chosenTime).slice(1,11),
-      time: "12:00AM",
-      booked: true
-    }
-    // data.push(booking)
-    console.log("booking", booking)
-    fetch('http://localhost:3001/availability', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(booking)
-  })
-    .then(response => response.json())
-    .then(data => setData(data))
-
-
-
-    fetchUnvailableDays();
-    setReserveMessage((<Typography variant="h5">We have your reservation!</Typography>))
-  }
-
 
   const initialValue = dayjs(current());
   // console.log(availableDays);
   
+  // handleCartOpen and handleCartClose handle the buttons that
+  // opens and closes the cart respectfully.
+  const handleCartOpen = () => {
+    setCartOpen(true);
+  };
+
+  const handleCartClose = () => {
+    setCartOpen(false);
+  };
+
+  // handleCartRemove handles the button that clears a single
+  // item from the cart
+  const handleCartRemove = (index: number) => {
+    setCartItems((prevCart) => {
+      const newCart = [...prevCart];
+      newCart.splice(index, 1);
+      return newCart;
+    });
+  };
+
+  // handleCartClear handles the button that clears the cart of
+  // all items
+  const handleCartClear = () => {
+    // Clear the cart
+    console.log("Clearing cart");
+    setCartItems([]);
+  };
+
+  // handleReserveAll handles the case for reserving all of the
+  // current items that are in the cart and then makes a
+  // corresponding object in the json file simulating a database
+  // called db.json
+  const handleReserveAll = async () => {
+    // Reserve all items in the cart
+    console.log("Reserving all items:", cartItems);
+    for (const item of cartItems) {
+      const booking = {
+        id: generateRandomID(),
+        item_id: item.item_id,
+        date: JSON.stringify(item.time).slice(1,11),
+        time: "12:00AM",
+        booked: true
+      };
+      await fetch(`${api}/availability`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(booking)
+      })
+      .then(response => response.json())
+      .then(data => setData(data))
+      .then(refresh => fetchUnvailableDays())
+    }
+    // Clear cart items and show reservation message
+    setCartItems([]);
+    setReserveMessage((<Typography variant="h6">Your reservations have been booked!</Typography>));
+  };
+  
+
   return (
-    <div>
-      
+    <div className='form-div'>
+      <div className='titlec'style={{ fontSize: '50px' }}>
+      Time Selection
+      </div>
+
+
+      <div className='description' style={{ fontSize: '40px' }}>
+        Select a time you want to book
+      </div>
+      <hr></hr>
   
       <Grid container spacing={8}>
-      <Grid xs={4} component="div">
+        <Grid xs={4} style = {{textAlign: 'center' }} component="div">
+          <Typography variant="h5" style={{color: "#4682B4", fontSize: "40px"}}><strong>Calendar</strong></Typography>
 
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            defaultValue={initialValue}
-            loading={isLoading}
-            onMonthChange={handleMonthChange}
-            renderLoading={() => <DayCalendarSkeleton />}
-            slots={{
-              day: ServerDay
-            }}
-            slotProps={{
-              day: {
-                availableDays,
-              } as unknown as object
-            }}
-            onChange={(e) => {
-              if (e) {
-                setChosenTime(timeToDate(e as TimeObj).toISOString());
-                setReserveMessage(<Typography variant="h5"></Typography>);
-              }
-            }}
-          />
-        </LocalizationProvider>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            
+            <DateCalendar
+              sx={{ color: 'text.primary', fontSize: 50, fontWeight: 'medium' }}
+              defaultValue={initialValue}
+              loading={isLoading}
+              onMonthChange={handleMonthChange}
+              renderLoading={() => <DayCalendarSkeleton />}
+              slots={{
+                day: ServerDay
+              }}
+              slotProps={{
+                day: {
+                  availableDays,
+                } as unknown as object
+              }}
+              onChange={(e) => {
+                if (e) {
+                  const selectedTime = timeToDate(e as TimeObj).toISOString();
+                  setChosenTime(selectedTime);
+                }
+              }}
+            />
+          </LocalizationProvider>
 
-      </Grid>
+        </Grid>
 
 
-      <Grid xs={4} style = {{textAlign: 'center',}} component="div">
+        <Grid xs={4} style = {{textAlign: 'center',}} component="div">
       
-      <Typography variant="h6">{getDate(chosenTime)}</Typography>
-        <div>
-        {getAvailability(chosenTime)}
-        </div>
+          
+          <Typography variant="h5"  style={{color: "#4682B4", fontSize: "40px"}}><strong>Date</strong></Typography>
+          <div className='datainfo'>
+            <Typography variant="h6" style={{color: "#4682B4", fontSize: "35px"}}>{getDate(chosenTime)}</Typography>
+          </div>
+          <div>
+            {getAvailability(chosenTime)}
+          </div>
 
-      </Grid>
+        </Grid>
 
+        <Grid xs={4} component="div">
+          <Typography variant="h5"  style={{color: "#4682B4", fontSize: "40px"}}><strong>Server Details</strong></Typography>
+          <div >{reserveMessage}</div>
+        </Grid>
 
-      <Grid xs={4} component="div">
-      <Typography variant="h6">Servers Detail</Typography>
-      <div>{reserveMessage}</div>
-      </Grid>
+      </Grid> 
 
+      <div className="cart-container">
+        <IconButton aria-label="cart" onClick={handleCartOpen}>
+          <Badge badgeContent={cartItems.length} color="secondary">
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+        {cartOpen && (
+          <div className="cart">
+            <div className="cart-header">
+              <h3>Shopping Cart</h3>
+              <IconButton aria-label="close" onClick={handleCartClose}>
+                <CloseIcon />
+              </IconButton>
+            </div>
+            <div className="cart-items">
+              {cartItems.map((item, index) => (
+                <div key={index} className="cart-item">
+                  <span>{item.time}</span>
+                  <IconButton aria-label="delete" onClick={() => handleCartRemove(index)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ))}
+            </div>
+            <div className="cart-footer">
+              <Button variant="contained" color="primary" onClick={handleReserveAll}>
+                Reserve All
+              </Button>
+              <Button variant="contained" color="secondary" onClick={handleCartClear}>
+                Clear Cart
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
 
-    </Grid> 
     </div>
     
   );

@@ -8,7 +8,7 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: mount    # set this to your application's name
-  AZURE_WEBAPP_PACKAGE_PATH: 'availability_viewer'      # set this to the path to your web app project, defaults to the repository root
+  AZURE_WEBAPP_PACKAGE_PATH: 'frontend'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '18.x'                # set this to the node version to use
 
 permissions:
@@ -25,19 +25,19 @@ jobs:
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
-        cache-dependency-path: availability_viewer/package-lock.json
+        cache-dependency-path: frontend/package-lock.json
 
     - name: npm install
       working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
       run: |
         npm install
     - name: npm client install
-      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/client'
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/availability_viewer'
       run: |
         npm install
         
     - name: npm build client
-      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/client'
+      working-directory: './${{ env.AZURE_WEBAPP_PACKAGE_PATH }}/availability_viewer'
       run: |
         npm run build
         rm -r public
